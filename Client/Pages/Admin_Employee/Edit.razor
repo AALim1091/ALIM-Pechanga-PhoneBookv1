@@ -1,0 +1,32 @@
+﻿@page "/AdminPortal/edit/{empId:int}"
+@inject HttpClient http
+@inject NavigationManager uriHelper
+@inject IJSRuntime js
+
+<h3>Edit Team Member Record</h3>
+
+<Form ButtonText="Update" emp="emp"
+      OnValidSubmit="@EditEmployee" />
+
+@code 
+{
+    [Parameter] public int empId { get; set; }
+    Employees emp = new Employees();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        //grab employee based off ID and save for edit page
+        //emp = await http.GetFromJsonAsync<Employees>($"api/PhoneBook/GetEmployeeByID/{empId}");
+        emp = await http.GetFromJsonAsync<Employees>($"api/PhoneBook/{empId}");
+
+    }
+
+    //Edits the employee selected on edit page and goes back to adminPortal on submission
+    async Task EditEmployee()
+    {
+        await http.PutAsJsonAsync("api/PhoneBook/EditEmployee", emp);
+        await js.InvokeVoidAsync("alert", $"Updated Successfully!");
+        uriHelper.NavigateTo("AdminPortal");
+
+    }
+}

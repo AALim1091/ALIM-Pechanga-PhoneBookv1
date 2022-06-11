@@ -1,0 +1,8 @@
+[Route("")]
+[Route("Home")]
+[Route("Home/Index")]
+[Route("Home/Index/{id?}")]
+public IActionResult Index(int? id)
+{
+return ControllerContext.MyDisplayRouteInfo(id);
+}

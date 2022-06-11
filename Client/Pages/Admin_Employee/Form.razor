@@ -1,0 +1,101 @@
+﻿<EditForm Model="@emp" OnValidSubmit="@OnValidSubmit"> @*EDITFORM TAG THAT TAKES IT MODEL AND HAS A FUNCTION CALL TO SUBMIT*@
+    <DataAnnotationsValidator /> @*VALIDATION*@
+    <div class="form-group"> @*TEXTBOX FOR DESIRED EmployeeID*@
+        <label>Employee ID :</label>
+        <div>
+            <InputNumber @bind-Value="@emp.EmployeeId" />
+            <ValidationMessage For="@(() => emp.EmployeeId)" />
+        </div>
+    </div>
+    <div class="form-group ">@*TEXTBOX FOR DESIRED FirstName*@
+        <div>
+            <label>FirstName :</label>
+            <div>
+                <InputText @bind-Value="@emp.FirstName" />
+                <ValidationMessage For="@(() => emp.FirstName)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group ">@*TEXTBOX FOR DESIRED LastName*@
+        <div>
+            <label>LastName :</label>
+            <div>
+                <InputText @bind-Value="@emp.LastName" />
+                <ValidationMessage For="@(() => emp.LastName)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group ">@*TEXTBOX FOR DESIRED Department*@
+        <div>
+            <label>Department :</label>
+            <div>
+                <InputText @bind-Value="@emp.Department" />
+                <ValidationMessage For="@(() => emp.Department)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group">@*TEXTBOX FOR DESIRED JobTitle*@
+        <label>JobTitle :</label>
+        <div>
+            <InputText @bind-Value="@emp.JobTitle" />
+            <ValidationMessage For="@(() => emp.JobTitle)" />
+        </div>
+    </div>
+    <div class="form-group ">@*TEXTBOX FOR DESIRED Email*@
+        <div>
+            <label>Email :</label>
+            <div>
+                <InputText @bind-Value="@emp.Email" />
+                <ValidationMessage For="@(() => emp.Email)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group ">@*TEXTBOX FOR DESIRED PhoneNumber*@
+        <div>
+            <label>PhoneNumber:</label>
+            <div>
+                <InputText @bind-Value="@emp.PhoneNumber" />
+                <ValidationMessage For="@(() => emp.PhoneNumber)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group ">@*TEXTBOX FOR DESIRED MobilePhoneNumber*@
+        <div>
+            <label>MobilePhoneNumber :</label>
+            <div>
+                <InputText @bind-Value="@emp.MobilePhoneNumber" />
+                <ValidationMessage For="@(() => emp.MobilePhoneNumber)" />
+            </div>
+        </div>
+    </div>
+     <div class="form-group ">@*TEXTBOX FOR DESIRED PhoneExtension*@
+        <div>
+            <label>PhoneExtension :</label>
+            <div>
+                <InputText @bind-Value="@emp.PhoneExtension" />
+                <ValidationMessage For="@(() => emp.PhoneExtension)" />
+            </div>
+        </div>
+    </div>
+     <div class="form-group ">@*TEXTBOX FOR DESIRED Comments*@
+        <div>
+            <label>Comments :</label>
+            <div>
+                <InputText @bind-Value="@emp.Comments" />
+                <ValidationMessage For="@(() => emp.Comments)" />
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        @ButtonText
+    </button>
+
+</EditForm>
+
+
+@code {
+    [Parameter] public Employees emp { get; set; } //e Object
+    [Parameter] public string ButtonText { get; set; } = "Save"; //Button Text Caption Defaults
+    [Parameter] public EventCallback OnValidSubmit { get; set; } //Method for submitting the form
+}

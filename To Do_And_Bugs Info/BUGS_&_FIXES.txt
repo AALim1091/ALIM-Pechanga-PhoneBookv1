@@ -1,0 +1,121 @@
+* TO DO and bugs to be fixed after initial requirements of the project *
+
+*****Database Improvement: (IMPORTANT!)use: Proper Database Design.png*****
+	-Change from 1 table into new design/multiple tables (note: need to research)
+	-Dont need a "ID" field (auto generates)
+
+****FRONT END****
+	-Adjust table and text to auto scale based on browser window size
+	-Better color palette
+	-Implement Pechanga Logo
+	-Include pics of employees in another field of the DB (put a face to the name concept)
+	-
+
+****BACK END****
+	-Change table name from 'e' (currently poor practice)
+	-Implement employee search field better (One function, called on both admin and user pages)
+	-Error handling for create/edit (Restrict name field to only character and badge# to only ints etc.)
+	-Make email hyperlinks of users, when clicked, open outlook compose email
+	-Search Bar crashes if NULL value in DB (i mean shouldnt have a null in proper DB anyway)
+	-Change delete empid feature, its ID is off for some reason
+	-
+
+
+****BUGS FOUND****
+	-Can enter digits in name fields
+	-Title is still a button when clicked (top left corner)
+	-Need to require all fields completed for CREATE method to not crash
+	-
+
+*****InitalizeData Script:*****
+INSERT INTO e (
+EmployeeId, 
+FirstName, 
+LastName, 
+Department, 
+JobTitle, 
+Email, 
+PhoneNumber,
+MobilePhoneNumber,
+PhoneExtension,
+Comments)
+VALUES
+(12345, 
+'5', 
+'5',
+'5',
+'5',
+'5',
+'5',
+'5',
+'5',
+'5');
+
+INSERT INTO e (
+EmployeeId, 
+FirstName, 
+LastName, 
+Department, 
+JobTitle, 
+Email, 
+PhoneNumber,
+MobilePhoneNumber,
+PhoneExtension,
+Comments)
+VALUES
+(12345, 
+'5', 
+'5',
+'5',
+'5',
+'5',
+'5',
+'5',
+'5',
+'5');
+
+INSERT INTO e (
+EmployeeId, 
+FirstName, 
+LastName, 
+Department, 
+JobTitle, 
+Email, 
+PhoneNumber,
+MobilePhoneNumber,
+PhoneExtension,
+Comments)
+VALUES
+(12345, 
+'5', 
+'5',
+'5',
+'5',
+'5',
+'5',
+'5',
+'5',
+'5');
+
+INSERT INTO e (
+EmployeeId, 
+FirstName, 
+LastName, 
+Department, 
+JobTitle, 
+Email, 
+PhoneNumber,
+MobilePhoneNumber,
+PhoneExtension,
+Comments)
+VALUES
+(12345, 
+'5', 
+'5',
+'5',
+'5',
+'5',
+'5',
+'5',
+'5',
+'5');

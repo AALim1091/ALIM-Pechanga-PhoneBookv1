@@ -1,0 +1,125 @@
+﻿@*FETCHES ALL EMPLOYEES FROM THE DATABASE for CRUD*@
+@page "/AdminPortal"
+@inject HttpClient client
+@inject IJSRuntime js
+
+<h3>Admin Portal</h3>
+<b>Use this portal for CRUD operations (i.e. Create, Read, Update and Delete)</b>
+
+@*BUTTON TO SEARCH EMPLOYEE*@
+<div class="form-group">
+    <input class="form-control" type="text" placeholder="Filter..."
+           @bind="Filter"
+           @bind:event="oninput">
+</div>
+
+
+@*BUTTON TO CREATE A EMPLOYEE*@
+<div class="form-group">
+    <a class="btn btn-success" href="AdminPortal/Create"><i class="oi oi-people"></i> Create</a> 
+</div>
+<br>
+
+@*Formats and designs phone directory below*@
+@if (employee == null)
+{
+    <text>Loading...</text>
+}
+else if (employee.Length == 0)
+{
+    <text>No Records Found.</text>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+               @*<th>Id</th>*@
+                @*<th>EmployeeId </th>*@
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Department</th>
+                <th>JobTitle</th>
+                <th>EmployeeId </th>
+                <th>Email</th>
+                <th>PhoneNumber</th>
+                <th>MobilePhoneNumber</th>
+                <th>PhoneExtension</th>
+                <th>Comments</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Employees emp in employee) @*ITERATION FOR NEW ROW FOR EACH IT EMPLOYEE RECORD*@
+            {
+                //method for search filtering
+                if (!IsVisible(emp))
+                    continue;
+                <tr>
+                    @*<td>@emp.Id</td>*@
+                    @*<td>@emp.EmployeeId </td>*@
+                    <td>@emp.FirstName</td>
+                    <td>@emp.LastName</td>
+                    <td>@emp.Department</td>
+                    <td>@emp.JobTitle</td>
+                    <td>@emp.EmployeeId </td>
+                    <td>@emp.Email</td>
+                    <td>@emp.PhoneNumber</td>
+                    <td>@emp.MobilePhoneNumber</td>
+                    <td>@emp.PhoneExtension</td>
+                    <td>@emp.Comments</td>
+                    <td>
+                        <a class="btn btn-success" href="AdminPortal/edit/@emp.Id">Edit</a> @*EDIT BUTTON FOR EVERY RECORD (Navigates to IT/EDIT/{ID})*@
+                        <button class="btn btn-danger" @onclick="@(() => Delete(emp.Id))">Delete</button> @*DELETE BUTTON FOR THE RECORD (Calls DELETE METHOD)*@
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+@code 
+{
+   //DEFINES LIST OF IT EMPLOYEES
+    Employees[] employee { get; set; }
+    protected override async Task OnInitializedAsync()  //FUNCTION THATS FIRED ON PAGE LOAD, USES HTTP CLIENT OBJECT TO RETRIEVE DATA FROM API ENDPOINT, 
+    {
+        //"api/[Controller]: -> link: https://stackoverflow.com/questions/72275080/unhandled-exception-rendering-component-is-an-invalid-start-of-a-value
+        //creates array of each entry in the Database for output
+        employee = await client.GetFromJsonAsync<Employees[]>($"api/PhoneBook/GetAllEmployees"); 
+    }
+
+    //Search Bar global variable and function - looks for FirstName,LastName,Phone ext, & PhoneNumber
+    public string Filter { get; set; }
+
+    public bool IsVisible(Employees emp)
+    {
+        if (string.IsNullOrEmpty(Filter))
+            return true;
+ 
+        if (emp.FirstName.ToUpper().Contains(Filter, StringComparison.OrdinalIgnoreCase))
+            return true;
+ 
+        if (emp.LastName.ToUpper().Contains(Filter, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (emp.PhoneExtension.ToUpper().Contains(Filter, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (emp.PhoneNumber.ToUpper().Contains(Filter, StringComparison.OrdinalIgnoreCase))
+            return true;
+ 
+        return false;
+    }
+
+    //STANDARD DELETE FUNCTION THAT GETS INVOKED ON BUTTON CLICK
+    async Task Delete(int empId) 
+    {
+        var emp = employee.First(x => x.Id == empId); //OBJECT OF IJSRUNTIME THAT INVOKED THE CONFIRMATION DIALOG
+        if (await js.InvokeAsync<bool>("confirm", $"Do you want to delete {emp.FirstName}'s ({emp.Id}) Record?"))
+        {
+            await client.DeleteAsync($"api/PhoneBook/{empId}");
+            await OnInitializedAsync();
+        }
+    }
+}
