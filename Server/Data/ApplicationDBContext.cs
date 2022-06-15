@@ -16,7 +16,7 @@ namespace PhoneBookv1.Server.Data
         }
 
         //Public Properties
-        public DbSet<Employees> e { get; set; }
+        public DbSet<Employees> employees { get; set; }
    }
 
 

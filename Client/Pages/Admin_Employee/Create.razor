@@ -13,79 +13,11 @@
     Employees emp = new Employees();
     async Task CreateEmployee()
     {
-
-        await http.PostAsJsonAsync("api/PhoneBook/CreateEmployee", emp);
         //POST DATA TO DATABASE
-        //bool validateBool = await Validate(emp);
-        //if (validateBool)
-        //{
-        //    await http.PostAsJsonAsync("api/PhoneBook/CreateEmployee", emp);
-        //}
-        //else
-        //{
-        //    throw error id can't be empty
-        //    <text>Fields can NOT be empty.</text>
-
-        //}
-
-
+        await http.PostAsJsonAsync("api/PhoneBook/CreateEmployee", emp);
+       
         //ONCE INSERTED NAVIGATE TO FETCHDATA COMPONENT
         uriHelper.NavigateTo("AdminPortal"); 
     }
 
-    //async Task <bool> Validate(Employees emp)
-    //{
-
-    //    //if(emp.Id != null) //Can never be null
-    //    //{
-    //    //    return false; 
-    //    //}
-    //    if(String.IsNullOrEmpty(emp.FirstName))
-    //    {
-    //        //nothing was input for firstname
-    //        return false;
-    //    }
-    //    else if(String.IsNullOrEmpty(emp.LastName))
-    //    {
-    //        //nothing was input
-    //        return false;
-    //    }
-    //    else if(String.IsNullOrEmpty(emp.Department))
-    //    {
-    //        //nothing was input
-    //        return false;
-    //    }
-    //    else if(String.IsNullOrEmpty(emp.JobTitle))
-    //    {
-    //        //nothing was input
-    //        return false;
-    //    }
-    //    else if(String.IsNullOrEmpty(emp.Email))
-    //    {
-    //        //nothing was input
-    //        return false;
-    //    }
-    //    else if(String.IsNullOrEmpty(emp.PhoneNumber))
-    //    {
-    //        //nothing was input
-    //        return false;
-    //    }
-    //    else if(String.IsNullOrEmpty(emp.MobilePhoneNumber))
-    //    {
-    //        //nothing was input
-    //        return false;
-    //    }
-    //    else if(String.IsNullOrEmpty(emp.PhoneExtension))
-    //    {
-    //        //nothing was input
-    //        return false;
-    //    }
-    //    else if(String.IsNullOrEmpty(emp.Comments))
-    //    {
-    //        //nothing was input
-    //        return false;
-    //    }
-
-    //    return true;
-    //}
 }

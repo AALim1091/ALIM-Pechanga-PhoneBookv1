@@ -6,26 +6,69 @@
 <h3>Admin Portal</h3>
 <b>Use this portal for CRUD operations (i.e. Create, Read, Update and Delete)</b>
 
-@*BUTTON TO SEARCH EMPLOYEE*@
+@*Box TO SEARCH EMPLOYEE*@
 <div class="form-group">
-    <input class="form-control" type="text" placeholder="Filter..."
-           @bind="Filter"
-           @bind:event="oninput">
+    <div class="row" style="width:250px">
+        FirstName
+        <input class="form-control" type="text" placeholder="FirstName search..."
+               @bind="firstNameFilter"
+               @bind:event="oninput"
+               @onkeydown="@Enter">
+    </div>
+
+    <div class="row" style="width:250px">
+        LastName
+        <input class="form-control" type="text" placeholder="LastName search..."
+               @bind="lastNameFilter"
+               @bind:event="oninput"
+               @onkeydown="@Enter">
+    </div>
+
+    <div class="row" style="width:250px">
+        PhoneExt.
+        <input class="form-control" type="text" placeholder="PhoneExt search..."
+               @bind="phoneExtFilter"
+               @bind:event="oninput"
+               @onkeydown="@Enter">
+    </div>
+
+    <div class="row" style="width:250px">
+        PhoneNumber
+        <input class="form-control" type="text" placeholder="PhoneNumber search..."
+               @bind="phoneFilter"
+               @bind:event="oninput"
+               @onkeydown="@Enter">
+    </div>
+
+
+    <div class="row" style="width:250px">
+        MobilePhoneNumber
+        <input class="form-control" type="text" placeholder="MobilePhoneNumber search..."
+               @bind="mobilePhoneFilter"
+               @bind:event="oninput"
+               @onkeydown="@Enter">
+     <a class="btn btn-info" @onclick="@(() => GetEmployees())">Search</a>
+    </div>
+
+    @*<div class="row" style="width:250px">
+        Department
+        <input class="form-control" type="text" placeholder="search...Department"
+               @bind="departmentFilter"
+               @bind:event="oninput"
+               @onkeydown="@Enter">
+    </div>*@
 </div>
 
 
 @*BUTTON TO CREATE A EMPLOYEE*@
-<div class="form-group">
-    <a class="btn btn-success" href="AdminPortal/Create"><i class="oi oi-people"></i> Create</a> 
-</div>
-<br>
+<a class="btn btn-success" href="AdminPortal/Create"><i class="oi oi-people"></i> Create</a> 
 
 @*Formats and designs phone directory below*@
 @if (employee == null)
 {
     <text>Loading...</text>
 }
-else if (employee.Length == 0)
+else if (employee.Count == 0)
 {
     <text>No Records Found.</text>
 }
@@ -38,9 +81,10 @@ else
                 @*<th>EmployeeId </th>*@
                 <th>FirstName</th>
                 <th>LastName</th>
+                <th>EmployeeId </th>
                 <th>Department</th>
                 <th>JobTitle</th>
-                <th>EmployeeId </th>
+                @*<th>TitleRank</th>*@
                 <th>Email</th>
                 <th>PhoneNumber</th>
                 <th>MobilePhoneNumber</th>
@@ -52,24 +96,25 @@ else
         <tbody>
             @foreach (Employees emp in employee) @*ITERATION FOR NEW ROW FOR EACH IT EMPLOYEE RECORD*@
             {
-                //method for search filtering
-                if (!IsVisible(emp))
-                    continue;
+                //method for search filtering in real time (NOT USED YET)
+                @*if (!IsVisible(emp))
+                    continue;*@
                 <tr>
                     @*<td>@emp.Id</td>*@
                     @*<td>@emp.EmployeeId </td>*@
                     <td>@emp.FirstName</td>
                     <td>@emp.LastName</td>
+                    <td>@emp.EmployeeId </td>
                     <td>@emp.Department</td>
                     <td>@emp.JobTitle</td>
-                    <td>@emp.EmployeeId </td>
+                   @* <td>@emp.TitleRank</td>*@
                     <td>@emp.Email</td>
                     <td>@emp.PhoneNumber</td>
                     <td>@emp.MobilePhoneNumber</td>
                     <td>@emp.PhoneExtension</td>
                     <td>@emp.Comments</td>
                     <td>
-                        <a class="btn btn-success" href="AdminPortal/edit/@emp.Id">Edit</a> @*EDIT BUTTON FOR EVERY RECORD (Navigates to IT/EDIT/{ID})*@
+                        <a class="btn btn-info" href="AdminPortal/edit/@emp.Id">Edit</a> @*EDIT BUTTON FOR EVERY RECORD (Navigates to IT/EDIT/{ID})*@
                         <button class="btn btn-danger" @onclick="@(() => Delete(emp.Id))">Delete</button> @*DELETE BUTTON FOR THE RECORD (Calls DELETE METHOD)*@
                     </td>
                 </tr>
@@ -80,36 +125,49 @@ else
 }
 @code 
 {
-   //DEFINES LIST OF IT EMPLOYEES
-    Employees[] employee { get; set; }
-    protected override async Task OnInitializedAsync()  //FUNCTION THATS FIRED ON PAGE LOAD, USES HTTP CLIENT OBJECT TO RETRIEVE DATA FROM API ENDPOINT, 
+     //DEFINES LIST OF EMPLOYEES
+     List<Employees> employee { get; set; }
+
+
+    //Search Filtering
+    public string firstNameFilter { get; set; }
+    public string lastNameFilter { get; set; }
+    public string phoneExtFilter { get; set; }
+    public string phoneFilter { get; set; }
+    public string mobilePhoneFilter { get; set; }
+    public string departmentFilter { get; set; }
+
+
+
+
+
+    protected override async Task OnInitializedAsync()  //FUNCTION THATS FIRED ON PAGE LOAD, USES HTTP CLIENT OBJECT TO RETRIEVE DATA FROM API ENDPOINT,
     {
         //"api/[Controller]: -> link: https://stackoverflow.com/questions/72275080/unhandled-exception-rendering-component-is-an-invalid-start-of-a-value
         //creates array of each entry in the Database for output
-        employee = await client.GetFromJsonAsync<Employees[]>($"api/PhoneBook/GetAllEmployees"); 
+
+        //Ensures not NULL
+        firstNameFilter = "";
+        lastNameFilter = "";
+        phoneExtFilter = "";
+        phoneFilter = "";
+        mobilePhoneFilter = "";
+        departmentFilter = "";
+        await GetEmployees();
     }
 
-    //Search Bar global variable and function - looks for FirstName,LastName,Phone ext, & PhoneNumber
-    public string Filter { get; set; }
-
-    public bool IsVisible(Employees emp)
+    //Keyboard enter or numpad
+    public async Task Enter(KeyboardEventArgs e)
     {
-        if (string.IsNullOrEmpty(Filter))
-            return true;
- 
-        if (emp.FirstName.ToUpper().Contains(Filter, StringComparison.OrdinalIgnoreCase))
-            return true;
- 
-        if (emp.LastName.ToUpper().Contains(Filter, StringComparison.OrdinalIgnoreCase))
-            return true;
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await GetEmployees();
+        }
+    }
 
-        if (emp.PhoneExtension.ToUpper().Contains(Filter, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (emp.PhoneNumber.ToUpper().Contains(Filter, StringComparison.OrdinalIgnoreCase))
-            return true;
- 
-        return false;
+    public async Task GetEmployees()
+    {
+        employee = await client.GetFromJsonAsync<List<Employees>>($"api/PhoneBook/GetAllEmployees/?fName={firstNameFilter}&lName={lastNameFilter}&phoneExt={phoneExtFilter}&phone={phoneFilter}&mobilePhone={mobilePhoneFilter}&department={departmentFilter}");
     }
 
     //STANDARD DELETE FUNCTION THAT GETS INVOKED ON BUTTON CLICK
@@ -122,4 +180,31 @@ else
             await OnInitializedAsync();
         }
     }
+
+    //IN REAL TIME search feature (NOT USED WIP)
+    //Search Bar global variable and function - looks for FirstName,LastName,Phone ext, & PhoneNumber (NOT USED, WIP)
+    //public string Filter { get; set; }
+
+    //public bool IsVisible(Employees emp)
+    //{
+    //    if (string.IsNullOrEmpty(Filter))
+    //        return true;
+ 
+    //    if (emp.FirstName.ToUpper().Contains(Filter, StringComparison.OrdinalIgnoreCase))
+    //        return true;
+ 
+    //    if (emp.LastName.ToUpper().Contains(Filter, StringComparison.OrdinalIgnoreCase))
+    //        return true;
+
+    //    if (emp.PhoneExtension.ToUpper().Contains(Filter, StringComparison.OrdinalIgnoreCase))
+    //        return true;
+
+    //    if (emp.PhoneNumber.ToUpper().Contains(Filter, StringComparison.OrdinalIgnoreCase))
+    //        return true;
+ 
+    //    return false;
+    //}
+
+
 }
+

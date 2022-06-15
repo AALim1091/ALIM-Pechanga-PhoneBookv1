@@ -12,7 +12,7 @@
 	-
 
 ****BACK END****
-	-Change table name from 'e' (currently poor practice)
+	-Username & password requirement to enter the "Admin Portal"
 	-Implement employee search field better (One function, called on both admin and user pages)
 	-Error handling for create/edit (Restrict name field to only character and badge# to only ints etc.)
 	-Make email hyperlinks of users, when clicked, open outlook compose email

@@ -43,15 +43,24 @@ namespace PhoneBookv1.Server.Controllers
             //ACTION METHOD TO GET ALL EMPLOYEES FROM CONTEXT INSTANCE
             [HttpGet]
             [Route("GetAllEmployees")]
-            public async Task<IActionResult> GetAllEmployees()
-                {
+            public async Task<IActionResult> GetAllEmployees(string fName, string lName, string phoneExt, string phone, string mobilePhone, string department)
+            {
                 List<Employees> emps = new List<Employees>();
                 try
                 {
-                    emps = await _context.e.ToListAsync();
-                    //emps.Where(x => x.Department == "blarg").ToListAsync();
+                    emps = await _context.employees.Where(x =>
+                   (fName == null || x.FirstName.ToUpper().Contains(fName.ToUpper()))
+                   && (lName == null || x.LastName.ToUpper().Contains(lName.ToUpper()))
+                   && (phoneExt == null || x.PhoneExtension.ToUpper().Contains(phoneExt.ToUpper()))
+                   && (phone == null || x.PhoneNumber.ToUpper().Contains(phone.ToUpper()))
+                   && (mobilePhone == null || x.MobilePhoneNumber.ToUpper().Contains(mobilePhone.ToUpper()))
+                   && (department == null || x.Department.ToUpper().Contains(department.ToUpper()))
+                   ).OrderBy(e => e.Department).ThenBy(e => e.TitleRank).ThenBy(e => e.LastName).ToListAsync();
+                //emps = await _context.employees.OrderBy(e => e.Department).ThenBy(e => e.TitleRank).ThenBy(e => e.LastName).ToListAsync();
+                //emps = await _context.employees.ToListAsync();
+                //emps.Where(x => x.Department == "blarg").ToListAsync();
 
-                }
+            }
                 catch (Exception e)
                 {
                     string exceptionMessage = e.Message;
@@ -60,60 +69,83 @@ namespace PhoneBookv1.Server.Controllers
 
             }
 
+            ////FETCH DETAILS OF ONE EMPLPOYEE THAT MATCHES PASSED ID AS PARAMETER
+            //[HttpGet("{id}")]
+            //public async Task<IActionResult> Get(int id)
+            //{
+            //    var emp = await _context.employees.FirstOrDefaultAsync(a => a.Id == id);
+            //    return Ok(emp);
+            //}
+
             //FETCH DETAILS OF ONE EMPLPOYEE THAT MATCHES PASSED ID AS PARAMETER
             [HttpGet("{id}")]
-            public async Task<IActionResult> Get(int id)
+            [Route("GetEmployeeByID/{empId?}")]
+            public async Task<IActionResult> GetEmployeeByID(int id)
             {
-                var emp = await _context.e.FirstOrDefaultAsync(a => a.Id == id);
+                var emp = await _context.employees.FirstOrDefaultAsync(a => a.Id == id);
                 return Ok(emp);
             }
 
-        ////FETCH DETAILS OF ONE EMPLPOYEE THAT MATCHES PASSED ID AS PARAMETER
-        //[HttpGet("{id}")]
-        //[Route("GetEmployeeByID")]
-        //public async Task<IActionResult> GetEmployeeByID(int id)
-        //{
-        //    var emp = await _context.e.FirstOrDefaultAsync(a => a.Id == id);
-        //    return Ok(emp);
-        //}
-
-        ////Search for Employee based on FirstName, LastName, PhoneExtension, & PhoneNumber
-        ////Need to use this when improving search implementation (Not used right now)
-        //[HttpGet("{searchText}")]
-        //public async Task<IActionResult> SearchEmployee(string searchText)
-        //{
-        //    var emp = await _context.ITtable
-        //    .Where(a => a.FirstName.Contains(searchText) || a.LastName.Contains(searchText) || a.PhoneExtension.Contains(searchText) || a.PhoneNumber.Contains(searchText)).ToListAsync();
-        //    return Ok(emp);
-
-        //}
-
-        //CREATE NEW EMPLOYEE IN TABLE
-        //[HttpPost]
-        //public async Task<IActionResult> Post(Employees it)
-        //{
-        //    _context.Add(it);
-        //    await _context.SaveChangesAsync();
-        //    return Ok(it.Id);
-        //}
-
-
-        //CREATE NEW EMPLOYEE IN TABLE
-        [HttpPost]
-            [Route("CreateEmployee")]
-            public async Task<IActionResult> CreateEmployee(Employees it)
-            {
-                _context.Add(it);
-            //if(it.JobTitle == "VP")
+            ////Search for Employee based on FirstName, LastName, PhoneExtension, & PhoneNumber
+            ////Need to use this when improving search implementation (Not used right now)
+            //[HttpGet("{searchText}")]
+            //public async Task<IActionResult> SearchEmployee(string searchText)
             //{
-            //    it.titlerank = 1;
-            //}
-            //else if(it.JobTitle = "")
-            //            {
+            //    var emp = await _context.ITtable
+            //    .Where(a => a.FirstName.Contains(searchText) || a.LastName.Contains(searchText) || a.PhoneExtension.Contains(searchText) || a.PhoneNumber.Contains(searchText)).ToListAsync();
+            //    return Ok(emp);
 
             //}
+
+            //CREATE NEW EMPLOYEE IN TABLE
+            //[HttpPost]
+            //public async Task<IActionResult> Post(Employees it)
+            //{
+            //    _context.Add(it);
+            //    await _context.SaveChangesAsync();
+            //    return Ok(it.Id);
+            //}
+
+
+            //CREATE NEW EMPLOYEE IN TABLE
+            [HttpPost]
+            [Route("CreateEmployee")]
+            public async Task<IActionResult> CreateEmployee(Employees cEmployee)
+            {
+                _context.Add(cEmployee);
+                cEmployee.JobTitle = cEmployee.JobTitle.ToUpper();
+                cEmployee.Department = cEmployee.Department.ToUpper();
+
+                if (cEmployee.JobTitle.Contains("VP"))
+                {
+                    cEmployee.TitleRank = 1;
+                }
+                else if(cEmployee.JobTitle.Contains("DIRECTOR") && !cEmployee.JobTitle.ToUpper().Contains("ASSISTANT DIRECTOR"))
+                {
+                    cEmployee.TitleRank = 2;
+                }
+                else if (cEmployee.JobTitle.Contains("ASSISTANT DIRECTOR"))
+                {
+                    cEmployee.TitleRank = 3;
+                }
+                else if (cEmployee.JobTitle.Contains("MANAGER") && !cEmployee.JobTitle.ToUpper().Contains("ASSISTANT MANAGER"))
+                {
+                    cEmployee.TitleRank = 4;
+                }
+                else if (cEmployee.JobTitle.Contains("ASSISTANT MANAGER"))
+                {
+                    cEmployee.TitleRank = 5;
+                }
+                else if (cEmployee.JobTitle.Contains("SUPERVISOR"))
+                {
+                    cEmployee.TitleRank = 6;
+                }
+                else
+                {
+                    cEmployee.TitleRank = 7;
+                }
                 await _context.SaveChangesAsync();
-                return Ok(it.Id);
+                    return Ok(cEmployee.Id);
             }
 
             ////MODIFIES EXISITING EMPLOYEE
@@ -128,9 +160,11 @@ namespace PhoneBookv1.Server.Controllers
             //MODIFIES EXISITING EMPLOYEE
             [HttpPut]
             [Route("EditEmployee")]
-            public async Task<IActionResult> Editemployee(Employees it)
+            public async Task<IActionResult> Editemployee(Employees eEmployee)
             {
-                _context.Entry(it).State = EntityState.Modified;
+                eEmployee.JobTitle = eEmployee.JobTitle.ToUpper();
+                eEmployee.Department = eEmployee.Department.ToUpper();
+                _context.Entry(eEmployee).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 return NoContent();
             }

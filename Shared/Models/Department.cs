@@ -5,6 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
+/*
+ * 
+ *******************NOT USED!!!!**************
+ ***********FOR FUTURE IMPLEMENTATION*********
+ * 
+ * */
+
 namespace PhoneBookv1.Shared.Models
 {
     //Defines Database fields

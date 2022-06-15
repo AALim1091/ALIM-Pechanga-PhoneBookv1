@@ -59,9 +59,12 @@ namespace PhoneBookv1.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("TitleRank")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
-                    b.ToTable("e");
+                    b.ToTable("employees");
                 });
 #pragma warning restore 612, 618
         }

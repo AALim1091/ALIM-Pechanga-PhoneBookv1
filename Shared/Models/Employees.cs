@@ -12,16 +12,20 @@ namespace PhoneBookv1.Shared.Models
     {
         //Primary Key
         public int Id { get; set; }
-
-        public int EmployeeId { get; set; }
         [Required]
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
         [Required]
+        public int EmployeeId { get; set; }
+        [Required]
         public string Department { get; set; }
         [Required]
         public string JobTitle { get; set; }
+        [Required]
+
+        //For Ranking the Employee titles with one table
+        public int TitleRank { get; set; }
         [Required]
         public string Email { get; set; }
         [Required]
@@ -32,8 +36,7 @@ namespace PhoneBookv1.Shared.Models
         public string PhoneExtension { get; set; }
         public string Comments { get; set; } 
 
-        //For Ranking the departments with one table
-        //public int TitleRank { get; set; }
+       
 
     }
 }

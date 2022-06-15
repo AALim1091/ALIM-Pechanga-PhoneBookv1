@@ -8,7 +8,7 @@ using PhoneBookv1.Server.Data;
 namespace PhoneBookv1.Server.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20220611183234_initial")]
+    [Migration("20220613060329_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,35 +27,46 @@ namespace PhoneBookv1.Server.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Department")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("JobTitle")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("MobilePhoneNumber")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PhoneExtension")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("TitleRank")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.ToTable("e");
+                    b.ToTable("employees");
                 });
 #pragma warning restore 612, 618
         }
