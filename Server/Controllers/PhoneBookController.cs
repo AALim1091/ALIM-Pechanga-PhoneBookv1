@@ -172,6 +172,12 @@ namespace PhoneBookv1.Server.Controllers
             {
                 eEmployee.JobTitle = eEmployee.JobTitle.ToUpper();
                 eEmployee.Department = eEmployee.Department.ToUpper();
+                //IF employeeID is negative 
+                if (eEmployee.EmployeeId < 0)
+                {
+                    eEmployee.EmployeeId = 0;
+                }
+
                 _context.Entry(eEmployee).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 return NoContent();
