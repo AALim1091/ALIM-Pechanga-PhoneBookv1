@@ -6,10 +6,16 @@
 <h3>Admin Portal</h3>
 <b>Use this portal for CRUD operations (i.e. Create, Read, Update and Delete)</b>
 
+<pre>
+@*BUTTON TO CREATE A EMPLOYEE*@
+<a class="btn btn-success" href="AdminPortal/Create"><i class="oi oi-people"></i> Create</a>
+</pre>
+ 
+
 @*Box TO SEARCH EMPLOYEE*@
 <div class="form-group">
     <div class="row" style="width:250px">
-        FirstName
+        <label>FirstName</label>
         <input class="form-control" type="text" placeholder="FirstName search..."
                @bind="firstNameFilter"
                @bind:event="oninput"
@@ -47,21 +53,18 @@
                @bind="mobilePhoneFilter"
                @bind:event="oninput"
                @onkeydown="@Enter">
-     <a class="btn btn-info" @onclick="@(() => GetEmployees())">Search</a>
+        <button type="button" class="btn btn-primary btn-sm" @onclick="@(() => GetEmployees())">Search</button>
+        <button type="button" class="btn btn-secondary btn-sm"  @onclick = "@(() => ClearFilters())">Reset Filter</button>
     </div>
 
-    @*<div class="row" style="width:250px">
+@*    <div class="row" style="width:250px">
         Department
-        <input class="form-control" type="text" placeholder="search...Department"
+        <input class="form-control" type="text" placeholder="Department search..."
                @bind="departmentFilter"
                @bind:event="oninput"
                @onkeydown="@Enter">
     </div>*@
 </div>
-
-
-@*BUTTON TO CREATE A EMPLOYEE*@
-<a class="btn btn-success" href="AdminPortal/Create"><i class="oi oi-people"></i> Create</a> 
 
 @*Formats and designs phone directory below*@
 @if (employee == null)
@@ -125,8 +128,8 @@ else
 }
 @code 
 {
-     //DEFINES LIST OF EMPLOYEES
-     List<Employees> employee { get; set; }
+    //DEFINES LIST OF EMPLOYEES
+    List<Employees> employee { get; set; }
 
 
     //Search Filtering
@@ -146,23 +149,30 @@ else
         //"api/[Controller]: -> link: https://stackoverflow.com/questions/72275080/unhandled-exception-rendering-component-is-an-invalid-start-of-a-value
         //creates array of each entry in the Database for output
 
-        //Ensures not NULL
-        firstNameFilter = "";
-        lastNameFilter = "";
-        phoneExtFilter = "";
-        phoneFilter = "";
-        mobilePhoneFilter = "";
-        departmentFilter = "";
+        //Ensures not NULL in search boxes
+        await ClearFilters();
         await GetEmployees();
     }
 
     //Keyboard enter or numpad
     public async Task Enter(KeyboardEventArgs e)
     {
+        //Remove 'if' for real time search BUT BUGS!
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
             await GetEmployees();
         }
+    }
+
+    //Clears Filter boxes
+    async Task ClearFilters()
+    {
+        firstNameFilter = "";
+        lastNameFilter = "";
+        phoneExtFilter = "";
+        phoneFilter = "";
+        mobilePhoneFilter = "";
+        departmentFilter = "";
     }
 
     public async Task GetEmployees()

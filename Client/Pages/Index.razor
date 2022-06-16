@@ -18,9 +18,9 @@ Click <b>"RESET FILTER" </b>to clear the selection
 </pre>
 
 <pre>
-   <a href="" target="" @onmouseover="@(() => departmentFilter = "IT")" @onmouseout="@(() => departmentFilter = "")" @onclick = "@(() => GetEmployees())"><b>-IT</b></a>
+   <a href="" target="" @onclick = "@(() => getIT())"><b>-IT</b></a>
   
-   <a href="" target="" @onmouseover="@(() => departmentFilter = "MARKETING")" @onmouseout="@(() => departmentFilter = "")" @onclick = "@(() => GetEmployees())"><b>-MARKETING</b></a>
+   <a href="" target="" @onclick = "@(() => getMarketing())"><b>-MARKETING</b></a>
 
 </pre>
 
@@ -31,7 +31,7 @@ If you wish to CRUD your phonebook, please select "<b>ADMIN PORTAL</b>"
 @*Box TO SEARCH EMPLOYEE*@
 <div class="form-group">
     <div class="row" style="width:250px">
-        FirstName
+        <label>FirstName</label>
         <input class="form-control" type="text" placeholder="FirstName search..."
                @bind="firstNameFilter"
                @bind:event="oninput"
@@ -79,7 +79,7 @@ If you wish to CRUD your phonebook, please select "<b>ADMIN PORTAL</b>"
                @onkeydown="@Enter">
 
         <button type="button" class="btn btn-primary btn-sm" @onclick="@(() => GetEmployees())">Search</button>
-        <button type="button" class="btn btn-secondary btn-sm" @onmouseover="@(() => departmentFilter = "")" @onmouseout="@(() => departmentFilter = "")" @onclick = "@(() => GetEmployees())">Reset Filter</button>
+        <button type="button" class="btn btn-secondary btn-sm"  @onclick = "@(() => ClearFilters())">Reset Filter</button>
     </div>
 </div>
 
@@ -155,32 +155,51 @@ else
     public string departmentFilter { get; set; }
 
 
-
-
-
     protected override async Task OnInitializedAsync()  //FUNCTION THATS FIRED ON PAGE LOAD, USES HTTP CLIENT OBJECT TO RETRIEVE DATA FROM API ENDPOINT,
     {
         //"api/[Controller]: -> link: https://stackoverflow.com/questions/72275080/unhandled-exception-rendering-component-is-an-invalid-start-of-a-value
         //creates array of each entry in the Database for output
 
-        //Ensures not NULL
+        //Ensures not NULL in search boxes
+        await ClearFilters();
+        await GetEmployees();
+    }
+
+    //Keyboard enter or numpad
+    public async Task Enter(KeyboardEventArgs e)
+    {
+        //Remove 'if' for real time search BUT BUGS!
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await GetEmployees();
+        }
+    }
+
+    //Department filters for hyperlinks
+    async Task getIT()
+    {
+        await ClearFilters();
+        departmentFilter = "IT";
+        await GetEmployees();
+    }
+
+    async Task getMarketing()
+    {
+        await ClearFilters();
+        departmentFilter = "MARKETING";
+        await GetEmployees();
+    }
+
+    //Clears Filter boxes
+    async Task ClearFilters()
+    {
         firstNameFilter = "";
         lastNameFilter = "";
         phoneExtFilter = "";
         phoneFilter = "";
         mobilePhoneFilter = "";
         departmentFilter = "";
-        await GetEmployees();
-    }
-
-
-    //Keyboard enter or numpad
-    public async Task Enter(KeyboardEventArgs e)
-    {
-        if (e.Code == "Enter" || e.Code == "NumpadEnter")
-        {
-            await GetEmployees();
-        }
+        
     }
 
     public async Task GetEmployees()

@@ -115,6 +115,14 @@ namespace PhoneBookv1.Server.Controllers
                 _context.Add(cEmployee);
                 cEmployee.JobTitle = cEmployee.JobTitle.ToUpper();
                 cEmployee.Department = cEmployee.Department.ToUpper();
+                
+                //note to self: Add functionality for duplicate employeeIDs as well
+                //IF employeeID is negative 
+                if(cEmployee.EmployeeId < 0)
+                {
+                    cEmployee.EmployeeId = 0;
+                }
+
 
                 if (cEmployee.JobTitle.Contains("VP"))
                 {

@@ -18,7 +18,8 @@
 	-Make email hyperlinks of users, when clicked, open outlook compose email
 	-Search Bar crashes if NULL value in DB (i mean shouldnt have a null in proper DB anyway)
 	-Change delete empid feature, its ID is off for some reason
-	-
+	-Do not allow more than 1 employee ID
+	-no negative for employee id
 
 
 ****BUGS FOUND****
