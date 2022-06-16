@@ -188,6 +188,7 @@ else
         await ClearFilters();
         departmentFilter = "MARKETING";
         await GetEmployees();
+
     }
 
     //Clears Filter boxes
@@ -199,6 +200,7 @@ else
         phoneFilter = "";
         mobilePhoneFilter = "";
         departmentFilter = "";
+        await GetEmployees();
         
     }
 
